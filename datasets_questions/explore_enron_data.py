@@ -17,6 +17,10 @@
 
 import pickle
 from math import isnan
+import sys
+import pprint
+sys.path.append("../tools/")
+from feature_format import featureFormat
 
 enron_data = pickle.load(open("../final_project/final_project_dataset.pkl", "r"))
 
@@ -47,4 +51,8 @@ for k,v in enron_data.items():
 print "Number of people with email address: ", poi_email_address_count  
 print "Number of people with known salary: ", poi_salary_count
 
+features_list = ['poi','salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus', 'restricted_stock_deferred', 'deferred_income',
+'total_stock_value', 'expenses', 'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees',
+'to_messages', 'from_poi_to_this_person', 'from_messages', 'from_this_person_to_poi', 'shared_receipt_with_poi']
 
+pprint.PrettyPrinter().pprint(featureFormat(enron_data, features_list))
