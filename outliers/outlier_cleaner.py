@@ -14,7 +14,13 @@ def outlierCleaner(predictions, ages, net_worths):
     cleaned_data = []
 
     ### your code goes here
-
+    from sklearn.metrics import mean_squared_error
+    for i in range(len(ages)):
+        error =  mean_squared_error(net_worths[i], predictions[i])
+        cleaned_data.append((ages[i], net_worths[i], error))
     
+    cleaned_data.sort(key=lambda x: x[2])
+    cleaned_data = cleaned_data[:int(0.9*len(cleaned_data))]
+
     return cleaned_data
 
