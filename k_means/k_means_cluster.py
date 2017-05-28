@@ -43,13 +43,38 @@ data_dict = pickle.load( open("../final_project/final_project_dataset.pkl", "r")
 ### there's an outlier--remove it! 
 data_dict.pop("TOTAL", 0)
 
+## find min,max value of exercised_stock_options
+min_exercised_stock_options = 999999999999999 
+max_exercised_stock_options = 0
+min_salary = 999999999
+max_salary = 0
+for poi, features in data_dict.items():
+    if poi != "TOTAL":
+        exercised_stock_options = features["exercised_stock_options"]
+        salary = features["salary"]
+        if (type(exercised_stock_options)==int or type(exercised_stock_options)==float) and exercised_stock_options>0:
+            if exercised_stock_options < min_exercised_stock_options:
+                min_exercised_stock_options = exercised_stock_options
+            if exercised_stock_options > max_exercised_stock_options:
+                max_exercised_stock_options = exercised_stock_options
+        if (type(salary)==int or type(salary)==float) and salary>0:
+            if salary < min_salary:
+                min_salary = salary
+            if salary > max_salary:
+                max_salary = salary
+print "min exercised stock options = ", min_exercised_stock_options
+print "max exercised stock options = ", max_exercised_stock_options
+print "min salary = ", min_salary
+print "max salary = ", max_salary
+
 
 ### the input features we want to use 
 ### can be any key in the person-level dictionary (salary, director_fees, etc.) 
 feature_1 = "salary"
 feature_2 = "exercised_stock_options"
+feature_3 = "total_payments"
 poi  = "poi"
-features_list = [poi, feature_1, feature_2]
+features_list = [poi, feature_1, feature_2, feature_3]
 data = featureFormat(data_dict, features_list )
 poi, finance_features = targetFeatureSplit( data )
 
@@ -58,13 +83,15 @@ poi, finance_features = targetFeatureSplit( data )
 ### you'll want to change this line to 
 ### for f1, f2, _ in finance_features:
 ### (as it's currently written, the line below assumes 2 features)
-for f1, f2 in finance_features:
-    plt.scatter( f1, f2 )
+for f1, f2, f3 in finance_features:
+    plt.scatter( f1, f2, f3 )
 plt.show()
 
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
-
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=2, random_state=0).fit(finance_features)
+pred = kmeans.predict(finance_features)
 
 
 
