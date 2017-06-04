@@ -29,22 +29,22 @@ from_chris = open("from_chris.txt", "r")
 from_data = []
 word_data = []
 
-### temp_counter is a way to speed up the development--there are
-### thousands of emails from Sara and Chris, so running over all of them
-### can take a long time
-### temp_counter helps you only look at the first 200 emails in the list so you
-### can iterate your modifications quicker
-temp_counter = 0
+
+try:
+    word_data = pickle.load(open("your_word_data.pkl", "r"))
+    from_data = pickle.load(open("your_email_authors.pkl", "r")
+except (OSError, IOError) as e:
+    ### temp_counter is a way to speed up the development--there are
+    ### thousands of emails from Sara and Chris, so running over all of them
+    ### can take a long time
+    ### temp_counter helps you only look at the first 200 emails in the list so you
+    ### can iterate your modifications quicker
 
 
-for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
-    for path in from_person:
-        ### only look at first 200 emails when developing
-        ### once everything is working, remove this line to run over full dataset
-        temp_counter += 1
-        if temp_counter < 200:
+    for name, from_person in [("sara", from_sara), ("chris", from_chris)]:
+        for path in from_person:
             path = os.path.join('..', path[:-1])
-            print path
+            #print path
             email = open(path, "r")
 
             ### use parseOutText to extract the text from the opened email
@@ -75,6 +75,13 @@ pickle.dump( word_data, open("your_word_data.pkl", "w") )
 pickle.dump( from_data, open("your_email_authors.pkl", "w") )
 
 print word_data[152]
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+tf = TfidfVectorizer(input=word_data, stop_words='english')
+tfidf_matrix = tf.fit_transform(word_data)
+feature_names = tf.get_feature_names()
+print "Number of unique words in vocab: ",len(feature_names)
+print "word number 34597: ", feature_names[34597]
 
 
 
